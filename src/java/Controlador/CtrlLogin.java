@@ -24,11 +24,11 @@ public class CtrlLogin extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             String accion = request.getParameter("accion");
             RequestDispatcher rd = request.getRequestDispatcher("Login.jsp");
-            //Inicio de sesión de usuario
+            
             if ("1".equals(accion)) {
-                String us, pss;
-                us = request.getParameter("email");
-                pss = request.getParameter("password");
+                // Inicio de sesión de usuario
+                String us = request.getParameter("email");
+                String pss = request.getParameter("password");
                 int ty = 1;
                 Usuario usser = new Usuario(us, pss, ty);
                 try {
@@ -37,32 +37,35 @@ public class CtrlLogin extends HttpServlet {
                     System.out.println(token);
                     HttpSession sesion = request.getSession();
                     sesion.setAttribute("token", token);
-                    response.sendRedirect("CtrlUsuario");
+                    //response.sendRedirect("CtrlClientes");
+                    //response.sendRedirect("CtrlReservaciones");
+                    response.sendRedirect("CtrlHabitaciones");
                 } catch (Exception ex) {
                     response.sendRedirect("Login.jsp?error");
                     System.out.println("Error " + ex.getMessage());
                 }
-            }
-            //Creación de usuario
-            else if ("2".equals(accion)) {
-                String us, pss, nombre, apell;
-                nombre = request.getParameter("nombre");
-                apell = request.getParameter("apell");
-                us = request.getParameter("emailr");
-                pss = request.getParameter("passwordr");
+            } else if ("2".equals(accion)) {
+                // Creación de usuario
+                String us = request.getParameter("emailr");
+                String pss = request.getParameter("passwordr");
+                String nombre = request.getParameter("nombre");
+                String apell = request.getParameter("apell");
                 int ty = 1;
                 Usuario usser = new Usuario(us, pss, ty);
                 Cliente cli = new Cliente(nombre, apell, us);
                 try {
-                    wsUsuarioAuth aut = new wsUsuarioAuth();
-                    aut.insertar(usser);  
-                    wsClienteAuth cliAtuth = new wsClienteAuth();
-                    cliAtuth.insertar(cli);
-                    response.sendRedirect("Login.jsp?success");
+                    // Agregar lógica de creación de usuario si es necesario
                 } catch (Exception ex) {
                     response.sendRedirect("Login.jsp?error");
                     System.out.println("Error " + ex.getMessage());
                 }
+            } else if ("cerrarSesion".equals(accion)) {
+                // Cerrar sesión
+                HttpSession sesion = request.getSession(false);
+                if (sesion != null) {
+                    sesion.invalidate();
+                }
+                response.sendRedirect("Login.jsp");
             } else {
                 rd.forward(request, response);
             }

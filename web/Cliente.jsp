@@ -1,13 +1,6 @@
-<%-- 
-    Document   : Administrador
-    Created on : 24 may 2024, 18:03:49
-    Author     : Pedro
---%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<!-- Website - www.codingnepalweb.com -->
 <html lang="en" dir="ltr">
     <head>
         <title>Clientes</title>
@@ -17,22 +10,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </head>
     <body>
-        <div class="sidebar">
+    <div class="sidebar">
             <div class="logo-details">
                 <i class='bx bxs-hotel'></i>
-                <div class="logo_name">Adminsitrador de hotel</div>
+                <div class="logo_name">Administrador de hotel</div>
                 <i class="bx bx-menu" id="btn"></i>
             </div>
             <ul class="nav-list">
                 <li>
-                    <i class="bx bx-search"></i>
-                    <input type="text" placeholder="Search..." />
-                    <span class="tooltip">Search</span>
-                </li>
-                <li>
                     <a href="PagPrincipal.jsp">
                         <i class="bx bx-grid-alt"></i>
-                        <span class="links_name">Dashboard</span>
+                        <span class="links_name">Pagina Principal</span>
                     </a>
                     <span class="tooltip">Dashboard</span>
                 </li>
@@ -43,7 +31,7 @@
                     </a>
                     <span class="tooltip">Clientes</span>
                 </li>
-                 <li>
+                <li>
                     <a href="CtrlUsuario">
                         <i class="bx bx-user"></i>
                         <span class="links_name">Usuarios</span>
@@ -51,26 +39,18 @@
                     <span class="tooltip">Usuarios</span>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="CtrlHabitaciones">
                         <i class="bx bx-bed"></i>
                         <span class="links_name">Habitaciones</span>
                     </a>
                     <span class="tooltip">Habitaciones</span>
                 </li>
-               
                 <li>
-                    <a href="Reservaciones.jsp">
+                    <a href="CtrlReservaciones">
                         <i class='bx bx-book-add'></i>
                         <span class="links_name">Reservaciones</span>
                     </a>
                     <span class="tooltip">Reservaciones</span>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bx bx-cog"></i>
-                        <span class="links_name">Setting</span>
-                    </a>
-                    <span class="tooltip">Setting</span>
                 </li>
                 <li class="profile">
                     <div class="profile-details">
@@ -80,13 +60,16 @@
                             <div class="job">Administrador</div>
                         </div>
                     </div>
-                    <i class="bx bx-log-out" id="log_out"></i>
+                    <a href="CtrlLogin?accion=cerrarSesion">
+                        <i class="bx bx-log-out" id="log_out"></i>
+                    </a>
                 </li>
             </ul>
         </div>
         <section class="home-section">
-            <div class="text">Administración de Clientes</div>
-            <!-- Aquí debes poner el cambio para la página principal -->
+            <div class="header">
+                <div class="text">Administración de Clientes</div>
+            </div>
             <header>
                 <h1>Gestión de clientes</h1>
             </header>
@@ -102,21 +85,33 @@
                 </thead>
                 <tbody>
                     <c:forEach var="cli" items="${requestScope.lstCliente}">
-                    <tr>
-                        <td>${cli.getIdcliente()}</td>
-                        <td>${cli.getNombre()}</td>
-                        <td>${cli.getApellido()}</td>
-                        <td>${cli.getEmail()}</td>
-                        <td>
-                            <button class="button" onclick="window.location.href='EditarCliente?Id=${cli.getIdcliente()}">Editar</button>
-                            <button class="button">Eliminar</button>
-                        </td>
-                    </tr>
-                </c:forEach>
-
-               
+                        <tr>
+                            <td>${cli.idcliente}</td>
+                            <td>${cli.nombre}</td>
+                            <td>${cli.apellido}</td>
+                            <td>${cli.email}</td>
+                            <td>
+                                <button class="button" onclick="window.location.href = 'EditarCliente.jsp?id=${cli.idcliente}&nombre=${cli.nombre}&apellido=${cli.apellido}&email=${cli.email}'">Editar</button>
+                                <form action="CtrlClientes" method="post" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este cliente?');">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="${cli.idcliente}">
+                                    <button type="submit" class="button">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
+            <div>
+                <li>
+                    <a href="NuevoCliente.jsp">
+                        <i class='bx bx-user-plus'></i>
+                        <span class="links_name">Agregar Cliente</span>
+                    </a>
+                </li>
+
+            </div>
+
         </section>
 
         <script>

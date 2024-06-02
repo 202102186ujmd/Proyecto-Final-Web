@@ -19,15 +19,10 @@
         <div class="sidebar">
             <div class="logo-details">
                 <i class='bx bxs-hotel'></i>
-                <div class="logo_name">Adminsitrador de hotel</div>
+                <div class="logo_name">Administrador de hotel</div>
                 <i class="bx bx-menu" id="btn"></i>
             </div>
             <ul class="nav-list">
-                <li>
-                    <i class="bx bx-search"></i>
-                    <input type="text" placeholder="Search..." />
-                    <span class="tooltip">Search</span>
-                </li>
                 <li>
                     <a href="PagPrincipal.jsp">
                         <i class="bx bx-grid-alt"></i>
@@ -50,25 +45,18 @@
                     <span class="tooltip">Usuarios</span>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="CtrlHabitaciones">
                         <i class="bx bx-bed"></i>
                         <span class="links_name">Habitaciones</span>
                     </a>
                     <span class="tooltip">Habitaciones</span>
                 </li>
                 <li>
-                    <a href="Reservaciones.jsp">
+                    <a href="CtrlReservaciones">
                         <i class='bx bx-book-add'></i>
                         <span class="links_name">Reservaciones</span>
                     </a>
                     <span class="tooltip">Reservaciones</span>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bx bx-cog"></i>
-                        <span class="links_name">Setting</span>
-                    </a>
-                    <span class="tooltip">Setting</span>
                 </li>
                 <li class="profile">
                     <div class="profile-details">
@@ -78,7 +66,9 @@
                             <div class="job">Administrador</div>
                         </div>
                     </div>
-                    <i class="bx bx-log-out" id="log_out"></i>
+                    <a href="CtrlLogin?accion=cerrarSesion">
+                        <i class="bx bx-log-out" id="log_out"></i>
+                    </a>
                 </li>
             </ul>
         </div>
@@ -105,7 +95,7 @@
                 menuBtnChange(); //calling the function(optional)
             });
 
-    // following are the code to change sidebar button(optional)
+            // following are the code to change sidebar button(optional)
             function menuBtnChange() {
                 if (sidebar.classList.contains("open")) {
                     closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");//replacing the iocns class

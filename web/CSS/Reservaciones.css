@@ -313,3 +313,38 @@
   width: calc(100% - 250px); /* Ajusta este valor según el ancho de la barra lateral abierta */
 }
 
+/* Estilos para el encabezado */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.header .text {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.header .add-button {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.header .add-button:hover {
+  background-color: #e68900;
+}
+
+button {
+  border: none;
+}

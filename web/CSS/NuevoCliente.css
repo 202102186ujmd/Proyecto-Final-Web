@@ -1,0 +1,97 @@
+/* Estilo general */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Contenedor del formulario */
+.container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Título del formulario */
+.container h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Etiquetas y campos del formulario */
+.container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.container input[type="text"],
+.container input[type="email"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Botón de guardar */
+.container button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.container button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Botón de cancelar */
+.container button.cancel {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.container button.cancel:hover {
+    background-color: #e53935;
+}
+
+/* Estilo para dispositivos móviles */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+        width: 90%;
+    }
+
+    .container h1 {
+        font-size: 20px;
+    }
+
+    .container input[type="text"],
+    .container input[type="email"] {
+        width: calc(100% - 16px);
+    }
+}

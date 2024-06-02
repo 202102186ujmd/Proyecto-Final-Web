@@ -1,10 +1,6 @@
-
 package Controlador;
 
-
 import DTO.Habitaciones;
-import DTO.Usuario;
-import Servicios.wsUsuarioAuth;
 import Servicios.wshabitacionAuth;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
@@ -17,41 +13,138 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
-/**
- *
- * @author Pedro
- */
-@WebServlet(name = "CtrlUsuario", urlPatterns = {"/CtrlUsuario"})
+@WebServlet(name = "CtrlHabitaciones", urlPatterns = {"/CtrlHabitaciones"})
 public class CtrlHabitaciones extends HttpServlet {
 
-protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-             HttpSession temp = request.getSession();
-            String token = temp.getAttribute("token").toString();
-            if(token !=null){
-                
-                wshabitacionAuth wsUSer = new  wshabitacionAuth();
-                try{
-                    List<Habitaciones> lst = wsUSer.consultar(token);
-                    request.setAttribute("lstUsuario", lst);
-                    RequestDispatcher rd = request.getRequestDispatcher("Usuarios.jsp");
-                    rd.forward(request, response);
-                    
-                }
-                catch(Exception ex){
-                    System.out.println("Erro" + ex.getMessage());
-                }
-            }
-            else{
-                System.out.println("Final");
-                response.sendRedirect("CtrlLogin");
+
+        HttpSession session = request.getSession();
+        String token = (String) session.getAttribute("token");
+
+        if (token == null || token.isEmpty()) {
+            response.sendRedirect("Login.jsp?error=notloggedin");
+            return;
+        }
+
+        String action = request.getParameter("action");
+
+        if (action == null || action.isEmpty()) {
+            handleGet(request, response, token);
+        } else {
+            switch (action) {
+                case "add":
+                    handlePost(request, response, token);
+                    break;
+                case "edit":
+                    handleEdit(request, response, token);
+                    break;
+                case "delete":
+                    handleDelete(request, response, token);
+                    break;
+                case "showAddForm":
+                    showAddForm(request, response);
+                    break;
+                case "showEditForm":
+                    showEditForm(request, response, token);
+                    break;
+                default:
+                    handleGet(request, response, token);
+                    break;
             }
         }
     }
 
-   
+    private void handleGet(HttpServletRequest request, HttpServletResponse response, String token)
+            throws ServletException, IOException {
+        wshabitacionAuth wsRoom = new wshabitacionAuth();
+
+        try {
+            List<Habitaciones> habitaciones = wsRoom.consultar(token);
+            request.setAttribute("lstHabitaciones", habitaciones);
+            RequestDispatcher rd = request.getRequestDispatcher("Habitaciones.jsp");
+            rd.forward(request, response);
+        } catch (Exception ex) {
+            response.sendRedirect("Login.jsp?error=failed");
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+
+    private void handlePost(HttpServletRequest request, HttpServletResponse response, String token)
+            throws ServletException, IOException {
+        String typehabitacion = request.getParameter("typehabitacion");
+        float precioxnoche = Float.parseFloat(request.getParameter("precioxnoche"));
+        String estado = request.getParameter("estado");
+
+        Habitaciones habitacion = new Habitaciones(0, typehabitacion, precioxnoche, estado);
+
+        wshabitacionAuth wsRoom = new wshabitacionAuth();
+
+        try {
+            wsRoom.insertar(token, habitacion);
+            response.sendRedirect("CtrlHabitaciones");
+        } catch (Exception ex) {
+            response.sendRedirect("Habitaciones.jsp?error=failed");
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+
+    private void handleEdit(HttpServletRequest request, HttpServletResponse response, String token)
+            throws ServletException, IOException {
+        int idhabitaion = Integer.parseInt(request.getParameter("idhabitaion"));
+        String typehabitacion = request.getParameter("typehabitacion");
+        float precioxnoche = Float.parseFloat(request.getParameter("precioxnoche"));
+        String estado = request.getParameter("estado");
+
+        Habitaciones habitacion = new Habitaciones(idhabitaion, typehabitacion, precioxnoche, estado);
+
+        wshabitacionAuth wsRoom = new wshabitacionAuth();
+
+        try {
+            wsRoom.modificar(token, idhabitaion, habitacion);
+            response.sendRedirect("CtrlHabitaciones");
+        } catch (Exception ex) {
+            response.sendRedirect("Habitaciones.jsp?error=failed");
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+
+    private void handleDelete(HttpServletRequest request, HttpServletResponse response, String token)
+            throws ServletException, IOException {
+        int idhabitaion = Integer.parseInt(request.getParameter("idhabitaion"));
+
+        wshabitacionAuth wsRoom = new wshabitacionAuth();
+
+        try {
+            wsRoom.eliminar(token, idhabitaion);
+            response.sendRedirect("CtrlHabitaciones");
+        } catch (Exception ex) {
+            response.sendRedirect("Habitaciones.jsp?error=failed");
+            System.out.println("Error: " + ex.getMessage());
+        }
+    }
+
+    private void showAddForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        RequestDispatcher rd = request.getRequestDispatcher("Habitaciones.jsp");
+        rd.forward(request, response);
+    }
+
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response, String token)
+            throws ServletException, IOException {
+        int idhabitaion = Integer.parseInt(request.getParameter("idhabitaion"));
+
+        wshabitacionAuth wsRoom = new wshabitacionAuth();
+        Habitaciones habitacion = wsRoom.consultar(token).stream().filter(h -> h.getIdhabitaion() == idhabitaion).findFirst().orElse(null);
+        if (habitacion != null) {
+            request.setAttribute("habitacion", habitacion);
+            RequestDispatcher rd = request.getRequestDispatcher("Habitaciones.jsp");
+            rd.forward(request, response);
+        } else {
+            response.sendRedirect("CtrlHabitaciones?error=notfound");
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -67,6 +160,6 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
 
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "CtrlHabitaciones Servlet";
     }
 }

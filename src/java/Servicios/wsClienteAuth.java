@@ -16,31 +16,37 @@ public class wsClienteAuth {
 
     public wsClienteAuth() {
         String url = "http://localhost:8080/ProyectoAPIWS/webresources/";
-        
-        
         this.cliente = ClientBuilder.newClient();
         this.wt = this.cliente.target(url).path("Clientes");
     }
 
     public List<Cliente> consultar(String token) {
-        return this.wt.request(MediaType.APPLICATION_JSON).header("Authorization", token).get(new GenericType<List<Cliente>>(){}); 
+        return this.wt.request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
+                .get(new GenericType<List<Cliente>>() {
+                });
     }
 
-    public void insertar(Object cli) {
-        this.wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(cli, MediaType.WILDCARD_TYPE));
+    public void insertar(String token, Object cli) {
+        this.wt.request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
+                .post(Entity.entity(cli, MediaType.APPLICATION_JSON));
     }
-    
-    public void modificar(int id, Object cli) {
+
+    public void modificar(String token, int id, Object cli) {
         String path = "/" + id; // Añadimos el ID al final de la URL
+        System.out.println("Enviando solicitud de modificación para ID: " + id + " con token: " + token);
         this.wt.path(path)
                 .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
                 .put(Entity.entity(cli, MediaType.APPLICATION_JSON));
     }
 
-    public void eliminar(int id) {
+    public void eliminar(String token, int id) {
         String path = "/" + id; // Añadimos el ID al final de la URL
         this.wt.path(path)
                 .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
                 .delete();
     }
 }

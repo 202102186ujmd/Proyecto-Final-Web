@@ -1,5 +1,4 @@
- 
-package Servicios;
+ package Servicios;
 
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.client.Client;

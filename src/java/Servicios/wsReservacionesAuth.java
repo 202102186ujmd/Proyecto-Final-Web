@@ -1,6 +1,5 @@
 package Servicios;
 
-
 import DTO.Reservaciones;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -17,31 +16,35 @@ public class wsReservacionesAuth {
 
     public wsReservacionesAuth() {
         String url = "http://localhost:8080/ProyectoAPIWS/webresources/";
-        
-        
         this.reservaciones = ClientBuilder.newClient();
-        this.wt = this.reservaciones.target(url).path("Reserva");
+        this.wt = this.reservaciones.target(url).path("Reservas");
     }
 
     public List<Reservaciones> consultar(String token) {
         return this.wt.request(MediaType.APPLICATION_JSON).header("Authorization", token).get(new GenericType<List<Reservaciones>>(){}); 
     }
 
-    public void insertar(Object cli) {
-        this.wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(cli, MediaType.WILDCARD_TYPE));
+    public void insertar(String token, Reservaciones res) {
+        this.wt.request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
+                .post(Entity.entity(res, MediaType.APPLICATION_JSON));
     }
     
-    public void modificar(int id, Object cli) {
+    public void modificar(String token, int id, Reservaciones res) {
         String path = "/" + id; // Añadimos el ID al final de la URL
+        System.out.println("Enviando solicitud de modificación para ID: " + id + " con token: " + token);
+        System.out.println("Datos de la reserva a modificar: " + res);
         this.wt.path(path)
                 .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(cli, MediaType.APPLICATION_JSON));
+                .header("Authorization", token)
+                .put(Entity.entity(res, MediaType.APPLICATION_JSON));
     }
 
-    public void eliminar(int id) {
+    public void eliminar(String token, int id) {
         String path = "/" + id; // Añadimos el ID al final de la URL
         this.wt.path(path)
                 .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
                 .delete();
     }
 }

@@ -1,8 +1,6 @@
 package Servicios;
 
-
 import DTO.Habitaciones;
-import DTO.Usuario;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
@@ -18,31 +16,35 @@ public class wshabitacionAuth {
 
     public wshabitacionAuth() {
         String url = "http://localhost:8080/ProyectoAPIWS/webresources/";
-        
-        
         this.room = ClientBuilder.newClient();
-        this.wt = this.room.target(url).path("Room");
+        this.wt = this.room.target(url).path("Habitaciones");
     }
 
     public List<Habitaciones> consultar(String token) {
-        return this.wt.request(MediaType.APPLICATION_JSON).header("Authorization", token).get(new GenericType<List<Habitaciones>>(){}); 
+        return this.wt.request(MediaType.APPLICATION_JSON)
+                      .header("Authorization", token)
+                      .get(new GenericType<List<Habitaciones>>(){}); 
     }
 
-    public void insertar(Object cli) {
-        this.wt.request(MediaType.APPLICATION_JSON).post(Entity.entity(cli, MediaType.WILDCARD_TYPE));
+    public void insertar(String token, Habitaciones habitacion) {
+        this.wt.request(MediaType.APPLICATION_JSON)
+               .header("Authorization", token)
+               .post(Entity.entity(habitacion, MediaType.APPLICATION_JSON));
     }
     
-    public void modificar(int id, Object cli) {
+    public void modificar(String token, int id, Habitaciones habitacion) {
         String path = "/" + id; // Añadimos el ID al final de la URL
         this.wt.path(path)
-                .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(cli, MediaType.APPLICATION_JSON));
+               .request(MediaType.APPLICATION_JSON)
+               .header("Authorization", token)
+               .put(Entity.entity(habitacion, MediaType.APPLICATION_JSON));
     }
 
-    public void eliminar(int id) {
+    public void eliminar(String token, int id) {
         String path = "/" + id; // Añadimos el ID al final de la URL
         this.wt.path(path)
-                .request(MediaType.APPLICATION_JSON)
-                .delete();
+               .request(MediaType.APPLICATION_JSON)
+               .header("Authorization", token)
+               .delete();
     }
 }

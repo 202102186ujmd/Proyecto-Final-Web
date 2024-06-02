@@ -1,12 +1,6 @@
-<%-- 
-    Document   : Administrador
-    Created on : 24 may 2024, 18:03:49
-    Author     : Pedro
---%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<!-- Website - www.codingnepalweb.com -->
 <html lang="en" dir="ltr">
     <head>
         <title>Administrador</title>
@@ -14,24 +8,44 @@
         <!-- Boxicons CDN Link -->
         <link href="https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+            .form-container {
+                display: none; /* Formulario oculto por defecto */
+                margin-top: 20px;
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                background-color: #f9f9f9;
+            }
+
+            .toggle-form-btn {
+                background-color: #4caf50;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                border-radius: 4px;
+                font-size: 14px;
+                transition: background-color 0.3s;
+            }
+
+            .toggle-form-btn:hover {
+                background-color: #45a049;
+            }
+        </style>
     </head>
     <body>
-        <div class="sidebar">
+    <div class="sidebar">
             <div class="logo-details">
                 <i class='bx bxs-hotel'></i>
-                <div class="logo_name">Adminsitrador de hotel</div>
+                <div class="logo_name">Administrador de hotel</div>
                 <i class="bx bx-menu" id="btn"></i>
             </div>
             <ul class="nav-list">
                 <li>
-                    <i class="bx bx-search"></i>
-                    <input type="text" placeholder="Search..." />
-                    <span class="tooltip">Search</span>
-                </li>
-                <li>
                     <a href="PagPrincipal.jsp">
                         <i class="bx bx-grid-alt"></i>
-                        <span class="links_name">Dashboard</span>
+                        <span class="links_name">Pagina Principal</span>
                     </a>
                     <span class="tooltip">Dashboard</span>
                 </li>
@@ -50,25 +64,18 @@
                     <span class="tooltip">Usuarios</span>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="CtrlHabitaciones">
                         <i class="bx bx-bed"></i>
                         <span class="links_name">Habitaciones</span>
                     </a>
                     <span class="tooltip">Habitaciones</span>
                 </li>
                 <li>
-                    <a href="Reservaciones.jsp">
+                    <a href="CtrlReservaciones">
                         <i class='bx bx-book-add'></i>
                         <span class="links_name">Reservaciones</span>
                     </a>
                     <span class="tooltip">Reservaciones</span>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="bx bx-cog"></i>
-                        <span class="links_name">Setting</span>
-                    </a>
-                    <span class="tooltip">Setting</span>
                 </li>
                 <li class="profile">
                     <div class="profile-details">
@@ -78,70 +85,94 @@
                             <div class="job">Administrador</div>
                         </div>
                     </div>
-                    <i class="bx bx-log-out" id="log_out"></i>
+                    <a href="CtrlLogin?accion=cerrarSesion">
+                        <i class="bx bx-log-out" id="log_out"></i>
+                    </a>
                 </li>
             </ul>
         </div>
         <section class="home-section">
-            <div class="text">Gestion de Usuario</div>
-            <!-- Aqui debes poner el cambio para la pagina principal -->
-            <div>
-                <p>Esta es la Pagina De Gestion de usuario</p>
-                
-                <table class="user-table">
+            <div class="text">Gestión de Usuarios</div>
+
+            <!-- Botón para mostrar el formulario de agregar nuevo usuario -->
+            <button class="toggle-form-btn" onclick="toggleForm()">Agregar Nuevo Usuario</button>
+
+            <!-- Formulario para agregar un nuevo usuario -->
+            <div class="form-container" id="form-container">
+                <h2>Agregar Nuevo Usuario</h2>
+                <form action="CtrlUsuario" method="post">
+                    <input type="hidden" name="action" value="add">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <label for="typeuser">Tipo de Usuario:</label>
+                    <input type="number" id="typeuser" name="typeuser" required>
+                    <button type="submit">Agregar Usuario</button>
+                </form>
+            </div>
+
+            <!-- Tabla para mostrar los usuarios -->
+            <table class="user-table">
                 <thead>
                     <tr>
                         <th>Username</th>
                         <th>Password</th>
-                        <th>typeuser</th>
+                        <th>Tipo de Usuario</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <%-- Aquí se debe iterar sobre la lista de clientes y mostrar cada uno en una fila de la tabla --%>
-                 <c:forEach var="usuario" items="${requestScope.lstUsuario}">
-                    <tr>
-                        <td>${usuario.getUsername()}</td>
-                        <td>${usuario.getPassword()}</td>
-                        <td>${usuario.getTypeuser()}</td>
-                        <td>
-                            <button class="button">Editar</button>
-                            <button class="button">Eliminar</button>
-                        </td>
-                        <!-- Agrega más columnas si es necesario -->
-                    </tr>
-                </c:forEach>
-                <!-- Más filas según sea necesario -->
+                    <c:forEach var="usuario" items="${requestScope.lstUsuario}">
+                        <tr>
+                            <td>${usuario.username}</td>
+                            <td>${usuario.password}</td>
+                            <td>${usuario.typeuser}</td>
+                            <td>
+                                <button class="button" onclick="window.location.href = 'EditarUsuario.jsp?username=${usuario.username}&password=${usuario.password}&typeuser=${usuario.typeuser}'">Editar</button>
+                                <form action="CtrlUsuario" method="post" style="display:inline;" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="username" value="${usuario.username}">
+                                    <button type="submit" class="button">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
-            </div>
         </section>
 
         <script>
+            function toggleForm() {
+                var formContainer = document.getElementById("form-container");
+                if (formContainer.style.display === "none" || formContainer.style.display === "") {
+                    formContainer.style.display = "block";
+                } else {
+                    formContainer.style.display = "none";
+                }
+            }
+
             let sidebar = document.querySelector(".sidebar");
             let closeBtn = document.querySelector("#btn");
             let searchBtn = document.querySelector(".bx-search");
 
             closeBtn.addEventListener("click", () => {
                 sidebar.classList.toggle("open");
-                menuBtnChange();//calling the function(optional)
+                menuBtnChange();
             });
 
-            searchBtn.addEventListener("click", () => { // Sidebar open when you click on the search iocn
+            searchBtn.addEventListener("click", () => {
                 sidebar.classList.toggle("open");
-                menuBtnChange(); //calling the function(optional)
+                menuBtnChange();
             });
 
-    // following are the code to change sidebar button(optional)
             function menuBtnChange() {
                 if (sidebar.classList.contains("open")) {
-                    closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");//replacing the iocns class
+                    closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
                 } else {
-                    closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");//replacing the iocns class
+                    closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
                 }
             }
-
         </script>
-
     </body>
 </html>
