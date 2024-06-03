@@ -29,17 +29,25 @@ public class CtrlLogin extends HttpServlet {
                 // Inicio de sesión de usuario
                 String us = request.getParameter("email");
                 String pss = request.getParameter("password");
-                int ty = 1;
-                Usuario usser = new Usuario(us, pss, ty);
+                Usuario usser = new Usuario(us, pss, 0);
                 try {
                     wsClienteAutenticacion aut = new wsClienteAutenticacion();
                     String token = aut.validar(usser);
                     System.out.println(token);
                     HttpSession sesion = request.getSession();
                     sesion.setAttribute("token", token);
-                    //response.sendRedirect("CtrlClientes");
-                    //response.sendRedirect("CtrlReservaciones");
-                    response.sendRedirect("CtrlHabitaciones");
+
+                    // Obtener detalles del usuario
+                    wsUsuarioAuth wsUsr = new wsUsuarioAuth();
+                    Usuario usuario = wsUsr.consultarPorUsername(token, us);
+                    
+                    if (usuario.getTypeuser() == 1) {
+                        response.sendRedirect("index.html");
+                    } else if (usuario.getTypeuser() == 2) {
+                        response.sendRedirect("PagPrincipal.jsp");
+                    } else {
+                        response.sendRedirect("Login.jsp?error=invalidtype");
+                    }
                 } catch (Exception ex) {
                     response.sendRedirect("Login.jsp?error");
                     System.out.println("Error " + ex.getMessage());
@@ -54,7 +62,23 @@ public class CtrlLogin extends HttpServlet {
                 Usuario usser = new Usuario(us, pss, ty);
                 Cliente cli = new Cliente(nombre, apell, us);
                 try {
-                    // Agregar lógica de creación de usuario si es necesario
+                    // Mandamos el usuario por defecto para la validación
+                    Usuario usser2 = new Usuario("admin", "admin", 1);
+                    wsClienteAutenticacion aut = new wsClienteAutenticacion();
+                    String token = aut.validar(usser2);
+                    System.out.println(token);
+                    HttpSession sesion = request.getSession();
+                    sesion.setAttribute("token", token);
+                    
+                    // Creamos el nuevo usuario y cliente
+                    wsUsuarioAuth wsUsr = new wsUsuarioAuth();
+                    wsUsr.insertar(token, usser);
+                    wsClienteAuth wsCli = new wsClienteAuth();
+                    wsCli.insertar(token, cli);
+                    
+                    // Redirigimos a la página de inicio
+                    response.sendRedirect("CtrlLogin");
+                    
                 } catch (Exception ex) {
                     response.sendRedirect("Login.jsp?error");
                     System.out.println("Error " + ex.getMessage());

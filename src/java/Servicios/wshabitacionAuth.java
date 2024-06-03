@@ -20,31 +20,33 @@ public class wshabitacionAuth {
         this.wt = this.room.target(url).path("Habitaciones");
     }
 
+    // Método para consultar todas las habitaciones
     public List<Habitaciones> consultar(String token) {
         return this.wt.request(MediaType.APPLICATION_JSON)
-                      .header("Authorization", token)
-                      .get(new GenericType<List<Habitaciones>>(){}); 
+                .header("Authorization", token)
+                .get(new GenericType<List<Habitaciones>>(){});
     }
 
+    // Método para insertar una nueva habitación
     public void insertar(String token, Habitaciones habitacion) {
         this.wt.request(MediaType.APPLICATION_JSON)
-               .header("Authorization", token)
-               .post(Entity.entity(habitacion, MediaType.APPLICATION_JSON));
-    }
-    
-    public void modificar(String token, int id, Habitaciones habitacion) {
-        String path = "/" + id; // Añadimos el ID al final de la URL
-        this.wt.path(path)
-               .request(MediaType.APPLICATION_JSON)
-               .header("Authorization", token)
-               .put(Entity.entity(habitacion, MediaType.APPLICATION_JSON));
+                .header("Authorization", token)
+                .post(Entity.entity(habitacion, MediaType.APPLICATION_JSON));
     }
 
+    // Método para modificar una habitación existente
+    public void modificar(String token, int id, Habitaciones habitacion) {
+        this.wt.path(String.valueOf(id))
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
+                .put(Entity.entity(habitacion, MediaType.APPLICATION_JSON));
+    }
+
+    // Método para eliminar una habitación
     public void eliminar(String token, int id) {
-        String path = "/" + id; // Añadimos el ID al final de la URL
-        this.wt.path(path)
-               .request(MediaType.APPLICATION_JSON)
-               .header("Authorization", token)
-               .delete();
+        this.wt.path(String.valueOf(id))
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
+                .delete();
     }
 }

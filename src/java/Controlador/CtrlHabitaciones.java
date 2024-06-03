@@ -4,7 +4,6 @@ import DTO.Habitaciones;
 import Servicios.wshabitacionAuth;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -92,17 +91,17 @@ public class CtrlHabitaciones extends HttpServlet {
 
     private void handleEdit(HttpServletRequest request, HttpServletResponse response, String token)
             throws ServletException, IOException {
-        int idhabitaion = Integer.parseInt(request.getParameter("idhabitaion"));
+        int idhabitacion = Integer.parseInt(request.getParameter("idhabitacion"));
         String typehabitacion = request.getParameter("typehabitacion");
         float precioxnoche = Float.parseFloat(request.getParameter("precioxnoche"));
         String estado = request.getParameter("estado");
 
-        Habitaciones habitacion = new Habitaciones(idhabitaion, typehabitacion, precioxnoche, estado);
+        Habitaciones habitacion = new Habitaciones(idhabitacion, typehabitacion, precioxnoche, estado);
 
         wshabitacionAuth wsRoom = new wshabitacionAuth();
 
         try {
-            wsRoom.modificar(token, idhabitaion, habitacion);
+            wsRoom.modificar(token, idhabitacion, habitacion);
             response.sendRedirect("CtrlHabitaciones");
         } catch (Exception ex) {
             response.sendRedirect("Habitaciones.jsp?error=failed");
@@ -112,12 +111,12 @@ public class CtrlHabitaciones extends HttpServlet {
 
     private void handleDelete(HttpServletRequest request, HttpServletResponse response, String token)
             throws ServletException, IOException {
-        int idhabitaion = Integer.parseInt(request.getParameter("idhabitaion"));
+        int idhabitacion = Integer.parseInt(request.getParameter("idhabitacion"));
 
         wshabitacionAuth wsRoom = new wshabitacionAuth();
 
         try {
-            wsRoom.eliminar(token, idhabitaion);
+            wsRoom.eliminar(token, idhabitacion);
             response.sendRedirect("CtrlHabitaciones");
         } catch (Exception ex) {
             response.sendRedirect("Habitaciones.jsp?error=failed");
@@ -133,10 +132,10 @@ public class CtrlHabitaciones extends HttpServlet {
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response, String token)
             throws ServletException, IOException {
-        int idhabitaion = Integer.parseInt(request.getParameter("idhabitaion"));
+        int idhabitacion = Integer.parseInt(request.getParameter("idhabitacion"));
 
         wshabitacionAuth wsRoom = new wshabitacionAuth();
-        Habitaciones habitacion = wsRoom.consultar(token).stream().filter(h -> h.getIdhabitaion() == idhabitaion).findFirst().orElse(null);
+        Habitaciones habitacion = wsRoom.consultar(token).stream().filter(h -> h.getIdhabitacion() == idhabitacion).findFirst().orElse(null);
         if (habitacion != null) {
             request.setAttribute("habitacion", habitacion);
             RequestDispatcher rd = request.getRequestDispatcher("Habitaciones.jsp");

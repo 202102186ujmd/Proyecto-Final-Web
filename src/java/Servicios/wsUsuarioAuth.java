@@ -7,6 +7,8 @@ import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+
 import java.util.List;
 
 public class wsUsuarioAuth {
@@ -23,28 +25,33 @@ public class wsUsuarioAuth {
     public List<Usuario> consultar(String token) {
         return this.wt.request(MediaType.APPLICATION_JSON)
                       .header("Authorization", token)
-                      .get(new GenericType<List<Usuario>>(){}); 
+                      .get(new GenericType<List<Usuario>>(){});
     }
 
-    public void insertar(String token, Usuario usuario) {
-        this.wt.request(MediaType.APPLICATION_JSON)
-               .header("Authorization", token)
-               .post(Entity.entity(usuario, MediaType.APPLICATION_JSON));
-    }
-    
-    public void modificar(String token, String username, Usuario usuario) {
-        String path = "/" + username; // Añadimos el nombre de usuario al final de la URL
-        this.wt.path(path)
-               .request(MediaType.APPLICATION_JSON)
-               .header("Authorization", token)
-               .put(Entity.entity(usuario, MediaType.APPLICATION_JSON));
+    public Usuario consultarPorUsername(String token, String username) {
+        return this.wt.path(username)
+                      .request(MediaType.APPLICATION_JSON)
+                      .header("Authorization", token)
+                      .get(new GenericType<Usuario>(){});
     }
 
-    public void eliminar(String token, String username) {
-        String path = "/" + username; // Añadimos el nombre de usuario al final de la URL
-        this.wt.path(path)
-               .request(MediaType.APPLICATION_JSON)
-               .header("Authorization", token)
-               .delete();
+    public Response insertar(String token, Usuario usuario) {
+        return this.wt.request(MediaType.APPLICATION_JSON)
+                      .header("Authorization", token)
+                      .post(Entity.entity(usuario, MediaType.APPLICATION_JSON));
+    }
+
+    public Response modificar(String token, String username, Usuario usuario) {
+        return this.wt.path(username)
+                      .request(MediaType.APPLICATION_JSON)
+                      .header("Authorization", token)
+                      .put(Entity.entity(usuario, MediaType.APPLICATION_JSON));
+    }
+
+    public Response eliminar(String token, String username) {
+        return this.wt.path(username)
+                      .request(MediaType.APPLICATION_JSON)
+                      .header("Authorization", token)
+                      .delete();
     }
 }

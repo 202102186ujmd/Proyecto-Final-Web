@@ -35,7 +35,7 @@
         </style>
     </head>
     <body>
-    <div class="sidebar">
+        <div class="sidebar">
             <div class="logo-details">
                 <i class='bx bxs-hotel'></i>
                 <div class="logo_name">Administrador de hotel</div>
@@ -108,7 +108,11 @@
                     <input type="password" id="password" name="password" required>
                     <label for="typeuser">Tipo de Usuario:</label>
                     <input type="number" id="typeuser" name="typeuser" required>
-                    <button type="submit">Agregar Usuario</button>
+                    <div>
+                        <br>
+                        <button type="submit" class="toggle-form-btn cancel">Agregar Usuario</button>
+                        <button type="button" class="toggle-form-btn cancel" onclick="toggleForm()">Cancelar</button>
+                    </div>
                 </form>
             </div>
 
